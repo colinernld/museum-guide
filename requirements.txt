@@ -1,0 +1,8 @@
+datasets>=3.0
+pillow
+torch
+torchvision
+numpy
+pandas
+scikit-learn
+matplotlib
