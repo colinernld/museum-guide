@@ -1,8 +1,12 @@
-datasets>=3.0
-pillow
-torch
-torchvision
-numpy
-pandas
-scikit-learn
-matplotlib
+# Versions used for the results in results/ (Python 3.12, CPU only)
+torch==2.14.1
+torchvision==0.29.1
+numpy==2.5.4
+pandas==3.0.6
+scikit-learn==1.9.1
+scikit-image==0.26.0
+scipy==1.18.1
+matplotlib==3.11.2
+pillow==12.3.0
+# only for make_wikiart_subset.py (building the dataset)
+datasets==5.1.0

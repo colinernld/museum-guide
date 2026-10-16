@@ -1,9 +1,9 @@
-data/
+/data/
 __pycache__/
 .ipynb_checkpoints/
 *.pt
 .venv/
 .DS_Store
 build.log
-build.log
-results/grid.png
+# sample grid shows WikiArt images (licence unknown): do not publish
+results/data/grid.png
