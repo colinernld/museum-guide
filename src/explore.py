@@ -1,7 +1,7 @@
 import collections
 import numpy as np
 import matplotlib.pyplot as plt
-from data import get_splits
+from data import get_splits, out_path
 
 ds, tr, va, te = get_splits()
 y = np.array(ds.targets)
@@ -25,5 +25,5 @@ for c, cname in enumerate(ds.classes):
         axes[c, j].axis("off")
     axes[c, 0].set_title(cname, fontsize=8, loc="left")
 plt.tight_layout()
-plt.savefig("results/grid.png", dpi=120)
-print("Saved results/grid.png")
+plt.savefig(out_path("data", "grid.png"), dpi=120)
+print("Saved results/data/grid.png")

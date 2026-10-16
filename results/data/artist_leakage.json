@@ -1,0 +1,44 @@
+{
+ "random_split": {
+  "val": {
+   "images": 225,
+   "by_named_painter": 107,
+   "painter_also_in_train": 104,
+   "share_of_split": 0.462
+  },
+  "test": {
+   "images": 225,
+   "by_named_painter": 122,
+   "painter_also_in_train": 119,
+   "share_of_split": 0.529
+  }
+ },
+ "artist_split": {
+  "val": {
+   "images": 249,
+   "by_named_painter": 141,
+   "painter_also_in_train": 0,
+   "share_of_split": 0.0
+  },
+  "test": {
+   "images": 232,
+   "by_named_painter": 124,
+   "painter_also_in_train": 0,
+   "share_of_split": 0.0
+  }
+ },
+ "unknown_artist_images": 717,
+ "named_painters": 120,
+ "top_painters": {
+  "claude-monet": 50,
+  "georges-braque": 26,
+  "juan-gris": 22,
+  "camille-corot": 17,
+  "alfred-sisley": 17,
+  "mstislav-dobuzhinsky": 15,
+  "ilya-mashkov": 15,
+  "henri-matisse": 15,
+  "zinaida-serebriakova": 15,
+  "isaac-levitan": 15
+ }
+}
