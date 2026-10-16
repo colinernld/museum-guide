@@ -173,6 +173,19 @@ batch 1, 1 CPU thread, measured on the development laptop.
 Full table with validation accuracy and parameter counts: `results/final/final_table.md`;
 one row per model and split: `results/final/final_results.json`.
 
+## Recommendation to the director
+
+- **A pretrained neural network is worth it.** On paintings by artists it has never seen, a ResNet-18 is right
+  about 3 times out of 4, against about 1 time out of 2 for the best classical pipeline (+24 points, an interval
+  that stays far from zero). The cost is about 12-15 ms per photo on a single CPU thread and a 45 MB model:
+  compatible with a kiosk.
+- **No need to train a network from scratch, nor to fine-tune it.** A frozen ResNet-18 used as a feature
+  extractor, followed by a logistic regression, is within the noise of the fine-tuned model, trains in about
+  30 s on a laptop CPU, and can be retrained by a small team when the collection changes.
+- **A feed-forward network on pixels is not worth it**: it does no better than a logistic regression.
+- **Use a confidence threshold** (e.g. 0.7) so that the guide says "I am not sure" rather than giving a wrong
+  story; and be aware that portraits and religious paintings will be the most frequent confusion.
+
 ## Limitations
 
 - Latency was measured on a development laptop, not on a kiosk CPU. It must be re-measured on the target
