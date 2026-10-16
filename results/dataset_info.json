@@ -1,0 +1,35 @@
+{
+  "repo": "huggan/wikiart",
+  "revision": "d559852d2b232e0fcf195e775866964f0564f2b5",
+  "label": "genre",
+  "classes": [
+    "cityscape",
+    "landscape",
+    "portrait",
+    "religious_painting",
+    "still_life"
+  ],
+  "per_class": 300,
+  "size": 128,
+  "crop": true,
+  "seed": 0,
+  "strategy": "fewest-shards",
+  "max_per_artist": 50,
+  "shards": [
+    7,
+    11,
+    33,
+    38,
+    54
+  ],
+  "counts": {
+    "cityscape": 300,
+    "landscape": 300,
+    "portrait": 300,
+    "religious_painting": 300,
+    "still_life": 300
+  },
+  "total": 1500,
+  "command": "python make_wikiart_subset.py --label genre --classes portrait landscape cityscape still_life religious_painting --per-class 300 --size 128 --out data/wikiart_genre5 --retries 10",
+  "created_utc": "2026-10-16T07:07:13+00:00"
+}
