@@ -1,44 +1,48 @@
+"""Classical baselines, first look (validation set only; the test set is used in final.py)."""
 import time
+
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 from data import SEED, get_splits
-
-
-def features(img):
-    """32x32 RGB pixels, scaled to [0, 1], flattened (3072 values)."""
-    small = np.asarray(img.resize((32, 32)), dtype=np.float32) / 255.0
-    return small.ravel()
-
+from features import handcrafted, pixels
 
 ds, tr, va, te = get_splits()
-X = np.stack([features(ds[i][0]) for i in range(len(ds))])
 y = np.array(ds.targets)
-print("Features:", X.shape, "| classes:", ds.classes)
+feats = {name: np.stack([f(ds[i][0]) for i in range(len(ds))])
+         for name, f in [("pixels", pixels), ("handcrafted", handcrafted)]}
+print("Classes:", ds.classes, "|", {k: v.shape for k, v in feats.items()})
 
-models = {
-    "logistic_regression": make_pipeline(
-        StandardScaler(), LogisticRegression(max_iter=2000, C=0.01)),
-    "random_forest": RandomForestClassifier(
-        n_estimators=300, random_state=SEED, n_jobs=-1),
+# C (inverse regularisation strength) is chosen on the validation set
+candidates = {
+    "logreg_pixels": ("pixels", lambda C: make_pipeline(
+        StandardScaler(), LogisticRegression(C=C, max_iter=3000)), [0.001, 0.01, 0.1]),
+    "random_forest_pixels": ("pixels", lambda C: RandomForestClassifier(
+        n_estimators=300, random_state=SEED, n_jobs=-1), [None]),
+    "logreg_handcrafted": ("handcrafted", lambda C: make_pipeline(
+        StandardScaler(), LogisticRegression(C=C, max_iter=3000)), [0.001, 0.01, 0.1]),
+    "svm_handcrafted": ("handcrafted", lambda C: make_pipeline(
+        StandardScaler(), SVC(C=C)), [0.3, 1, 3, 10]),
 }
 
-for name, model in models.items():
-    t0 = time.time()
-    model.fit(X[tr], y[tr])
-    fit_s = time.time() - t0
-
-    t0 = time.time()
-    pred = model.predict(X[va])
-    ms_per_img = (time.time() - t0) / len(va) * 1000
-
+for name, (feat, make, grid) in candidates.items():
+    X = feats[feat]
     print(f"\n== {name} ==")
-    print(f"train acc: {accuracy_score(y[tr], model.predict(X[tr])):.3f}")
-    print(f"val acc:   {accuracy_score(y[va], pred):.3f}")
-    print(f"fit time: {fit_s:.1f}s | inference: {ms_per_img:.3f} ms/image")
+    best = None
+    for C in grid:
+        t0 = time.time()
+        model = make(C).fit(X[tr], y[tr])
+        fit_s = time.time() - t0
+        acc = accuracy_score(y[va], model.predict(X[va]))
+        print(f"  C={C}: train acc {model.score(X[tr], y[tr]):.3f} | val acc {acc:.3f} "
+              f"| fit {fit_s:.1f}s")
+        if best is None or acc > best[0]:
+            best = (acc, C, model)
+    print(f"best C={best[1]} | val acc {best[0]:.3f}")
     print("confusion matrix (rows = true, cols = predicted):")
-    print(confusion_matrix(y[va], pred))
+    print(confusion_matrix(y[va], best[2].predict(X[va])))

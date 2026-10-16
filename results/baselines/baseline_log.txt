@@ -1,0 +1,48 @@
+Classes: ['cityscape', 'landscape', 'portrait', 'religious_painting', 'still_life'] | {'pixels': (1500, 3072), 'handcrafted': (1500, 846)}
+
+== logreg_pixels ==
+  C=0.001: train acc 0.696 | val acc 0.418 | fit 0.3s
+  C=0.01: train acc 0.934 | val acc 0.341 | fit 0.4s
+  C=0.1: train acc 1.000 | val acc 0.329 | fit 0.5s
+best C=0.001 | val acc 0.418
+confusion matrix (rows = true, cols = predicted):
+[[25 20  2  8 11]
+ [13 22  2  4  7]
+ [ 4  1 21 12 14]
+ [ 2  4 11 20  7]
+ [ 3  5  6  9 16]]
+
+== random_forest_pixels ==
+  C=None: train acc 1.000 | val acc 0.422 | fit 1.2s
+best C=None | val acc 0.422
+confusion matrix (rows = true, cols = predicted):
+[[35 19  3  6  3]
+ [18 15  3  8  4]
+ [ 2  3 26 10 11]
+ [ 3  4 12 16  9]
+ [ 6  3  8  9 13]]
+
+== logreg_handcrafted ==
+  C=0.001: train acc 0.734 | val acc 0.574 | fit 0.0s
+  C=0.01: train acc 0.878 | val acc 0.578 | fit 0.0s
+  C=0.1: train acc 0.991 | val acc 0.510 | fit 0.0s
+best C=0.01 | val acc 0.578
+confusion matrix (rows = true, cols = predicted):
+[[42 16  0  3  5]
+ [10 25  1  6  6]
+ [ 0  0 27 20  5]
+ [ 1  2  5 29  7]
+ [ 5  2  5  6 21]]
+
+== svm_handcrafted ==
+  C=0.3: train acc 0.697 | val acc 0.506 | fit 0.3s
+  C=1: train acc 0.890 | val acc 0.538 | fit 0.2s
+  C=3: train acc 0.983 | val acc 0.542 | fit 0.3s
+  C=10: train acc 1.000 | val acc 0.530 | fit 0.3s
+best C=3 | val acc 0.542
+confusion matrix (rows = true, cols = predicted):
+[[36 19  4  2  5]
+ [ 7 29  3  3  6]
+ [ 0  1 28 14  9]
+ [ 1  1 13 24  5]
+ [ 3  5 11  2 18]]
