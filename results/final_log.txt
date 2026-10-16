@@ -1,0 +1,25 @@
+seed 1 | logreg          val 0.378 test 0.347 | 0.16 ms
+seed 1 | random_forest   val 0.453 test 0.387 | 6.14 ms
+seed 1 | ffn             val 0.391 test 0.329 | 0.05 ms
+seed 1 | resnet_extract  val 0.764 test 0.747 | 10.79 ms
+seed 1 | resnet_finetune val 0.809 test 0.787 | 9.16 ms
+seed 2 | logreg          val 0.378 test 0.347 | 0.16 ms
+seed 2 | random_forest   val 0.431 test 0.409 | 7.30 ms
+seed 2 | ffn             val 0.431 test 0.422 | 0.07 ms
+seed 2 | resnet_extract  val 0.760 test 0.724 | 8.41 ms
+seed 2 | resnet_finetune val 0.778 test 0.742 | 8.74 ms
+seed 3 | logreg          val 0.378 test 0.347 | 0.16 ms
+seed 3 | random_forest   val 0.449 test 0.400 | 7.00 ms
+seed 3 | ffn             val 0.444 test 0.400 | 0.05 ms
+seed 3 | resnet_extract  val 0.742 test 0.729 | 8.62 ms
+seed 3 | resnet_finetune val 0.773 test 0.764 | 9.11 ms
+
+Test set: 225 images, seeds [1, 2, 3]. Latency: batch 1, 1 CPU thread.
+
+| Model | Val acc (%) | Test acc (%) | Params | Size (MB) | Latency (ms/img) | Train (s) |
+|---|---|---|---|---|---|---|
+| logreg | 37.8 ± 0.0 | 34.7 ± 0.0 | 15,365 | 0.2 | 0.16 | 1 |
+| random_forest | 44.4 ± 1.2 | 39.9 ± 1.1 | 121,610 | 12.8 | 6.81 | 7 |
+| ffn | 42.2 ± 2.8 | 38.4 ± 4.9 | 1,573,637 | 6.3 | 0.06 | 2 |
+| resnet_extract | 75.6 ± 1.2 | 73.3 ± 1.2 | 11,179,077 | 44.7 | 9.27 | 110 |
+| resnet_finetune | 78.7 ± 1.9 | 76.4 ± 2.2 | 11,179,077 | 44.7 | 9.01 | 161 |
