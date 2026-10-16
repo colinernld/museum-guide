@@ -1,0 +1,64 @@
+
+=== seed 1: train 1068, val 206, test 226 ===
+seed 1 | logreg_pixels          val 0.393 test 0.442 | 0.31 ms | train 2s
+seed 1 | random_forest_pixels   val 0.345 test 0.429 | 10.46 ms | train 6s
+seed 1 | logreg_handcrafted     val 0.558 test 0.504 | 1.37 ms | train 0s
+seed 1 | svm_handcrafted        val 0.515 test 0.540 | 1.85 ms | train 2s
+seed 1 | resnet_features_logreg val 0.752 test 0.774 | 12.88 ms | train 26s
+seed 1 | ffn                    val 0.408 test 0.438 | 0.27 ms | train 3s
+seed 1 | resnet_extract         val 0.680 test 0.743 | 13.53 ms | train 201s
+seed 1 | resnet_finetune        val 0.767 test 0.765 | 10.64 ms | train 216s
+
+=== seed 2: train 1061, val 202, test 237 ===
+seed 2 | logreg_pixels          val 0.446 test 0.451 | 0.28 ms | train 2s
+seed 2 | random_forest_pixels   val 0.485 test 0.388 | 9.85 ms | train 6s
+seed 2 | logreg_handcrafted     val 0.609 test 0.523 | 1.23 ms | train 0s
+seed 2 | svm_handcrafted        val 0.545 test 0.506 | 1.93 ms | train 1s
+seed 2 | resnet_features_logreg val 0.718 test 0.751 | 10.64 ms | train 26s
+seed 2 | ffn                    val 0.431 test 0.418 | 0.25 ms | train 3s
+seed 2 | resnet_extract         val 0.708 test 0.713 | 10.83 ms | train 233s
+seed 2 | resnet_finetune        val 0.762 test 0.755 | 12.00 ms | train 228s
+
+=== seed 3: train 1034, val 241, test 225 ===
+seed 3 | logreg_pixels          val 0.402 test 0.373 | 0.67 ms | train 2s
+seed 3 | random_forest_pixels   val 0.402 test 0.351 | 12.68 ms | train 6s
+seed 3 | logreg_handcrafted     val 0.535 test 0.493 | 1.34 ms | train 0s
+seed 3 | svm_handcrafted        val 0.539 test 0.462 | 1.79 ms | train 2s
+seed 3 | resnet_features_logreg val 0.739 test 0.702 | 11.58 ms | train 26s
+seed 3 | ffn                    val 0.440 test 0.351 | 0.41 ms | train 5s
+seed 3 | resnet_extract         val 0.759 test 0.716 | 12.19 ms | train 239s
+seed 3 | resnet_finetune        val 0.801 test 0.751 | 11.86 ms | train 279s
+
+=== seed 4: train 1052, val 214, test 234 ===
+seed 4 | logreg_pixels          val 0.393 test 0.444 | 0.89 ms | train 2s
+seed 4 | random_forest_pixels   val 0.402 test 0.453 | 13.46 ms | train 7s
+seed 4 | logreg_handcrafted     val 0.509 test 0.590 | 1.49 ms | train 0s
+seed 4 | svm_handcrafted        val 0.495 test 0.581 | 1.63 ms | train 2s
+seed 4 | resnet_features_logreg val 0.710 test 0.744 | 11.89 ms | train 26s
+seed 4 | ffn                    val 0.444 test 0.449 | 0.79 ms | train 6s
+seed 4 | resnet_extract         val 0.738 test 0.761 | 22.77 ms | train 265s
+seed 4 | resnet_finetune        val 0.692 test 0.812 | 21.57 ms | train 339s
+
+=== seed 5: train 1032, val 251, test 217 ===
+seed 5 | logreg_pixels          val 0.402 test 0.392 | 0.91 ms | train 3s
+seed 5 | random_forest_pixels   val 0.367 test 0.346 | 17.22 ms | train 9s
+seed 5 | logreg_handcrafted     val 0.538 test 0.562 | 1.78 ms | train 0s
+seed 5 | svm_handcrafted        val 0.498 test 0.521 | 2.45 ms | train 2s
+seed 5 | resnet_features_logreg val 0.729 test 0.770 | 15.38 ms | train 26s
+seed 5 | ffn                    val 0.410 test 0.378 | 0.63 ms | train 4s
+seed 5 | resnet_extract         val 0.733 test 0.751 | 16.47 ms | train 322s
+seed 5 | resnet_finetune        val 0.753 test 0.770 | 20.78 ms | train 305s
+
+Artist-disjoint splits, seeds [1, 2, 3, 4, 5] (one split per seed, 217-237 test images each). Mean ± std over runs; [95 % CI of the mean].
+Latency: end-to-end (resize + features + model), batch 1, 1 CPU thread.
+
+| Model | Val acc (%) | Test acc (%) | 95 % CI | Gap to fine-tuned ResNet (pts, paired) | Params | Size (MB) | Latency (ms/img) | Train (s) |
+|---|---|---|---|---|---|---|---|---|
+| logreg_pixels | 40.7 ± 2.2 | 42.1 ± 3.6 | [37.6, 46.5] | -35.0 [-39.3, -30.7] | 15,365 | 0.1 | 0.61 | 2 |
+| random_forest_pixels | 40.0 ± 5.3 | 39.3 ± 4.7 | [33.5, 45.2] | -37.7 [-42.0, -33.4] | 124,272 nodes | 12.7 | 12.73 | 7 |
+| logreg_handcrafted | 55.0 ± 3.7 | 53.5 ± 4.0 | [48.4, 58.5] | -23.6 [-26.5, -20.7] | 4,235 | 0.0 | 1.44 | 0 |
+| svm_handcrafted | 51.8 ± 2.3 | 52.2 ± 4.4 | [46.8, 57.6] | -24.9 [-27.9, -21.8] | 874,650 | 6.9 | 1.93 | 2 |
+| ffn | 42.7 ± 1.7 | 40.7 ± 4.1 | [35.6, 45.8] | -36.4 [-40.4, -32.4] | 1,573,637 | 6.3 | 0.47 | 4 |
+| resnet_features_logreg | 73.0 ± 1.7 | 74.8 ± 2.9 | [71.3, 78.4] | -2.3 [-6.5, +2.0] | 2,565 | 44.7 | 12.47 | 26 |
+| resnet_extract | 72.4 ± 3.1 | 73.7 ± 2.1 | [71.0, 76.3] | -3.4 [-5.1, -1.7] | 11,179,077 | 44.7 | 15.16 | 252 |
+| resnet_finetune | 75.5 ± 4.0 | 77.1 ± 2.4 | [74.1, 80.1] | reference | 11,179,077 | 44.7 | 15.37 | 273 |

@@ -11,7 +11,7 @@ import torch
 import torch.nn as nn
 import torchvision
 
-from data import SEED, get_splits
+from data import SEED, get_splits, out_path
 
 p = argparse.ArgumentParser()
 p.add_argument("--mode", choices=["extract", "finetune"], required=True)
@@ -132,7 +132,7 @@ json.dump({"args": vars(a), "params": n_total, "trainable": n_train,
            "best_epoch": best["epoch"], "best_val_loss": bl, "best_val_acc": bacc,
            "train_seconds": train_s, "latency_ms_batch1": lat1,
            "latency_ms_batch32": lat_b, "size_mb": size_mb, **hist},
-          open(f"results/{tag}_history.json", "w"), indent=1)
+          open(out_path("resnet", f"{tag}_history.json"), "w"), indent=1)
 fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 ax[0].plot(hist["train_loss"], label="train")
 ax[0].plot(hist["val_loss"], label="val")
@@ -146,4 +146,4 @@ for x in ax:
     x.set_xlabel("epoch")
     x.legend()
 plt.tight_layout()
-plt.savefig(f"results/{tag}_curves.png", dpi=120)
+plt.savefig(out_path("resnet", f"{tag}_curves.png"), dpi=120)

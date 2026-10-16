@@ -1,0 +1,35 @@
+epoch  1 | val loss 0.720
+epoch  2 | val loss 0.692
+epoch  3 | val loss 0.683
+epoch  4 | val loss 0.730
+epoch  5 | val loss 0.730
+epoch  6 | val loss 0.776
+epoch  7 | val loss 0.778
+
+Test accuracy: 0.752  (226 images)
+
+Confusion matrix (rows = true, cols = predicted):
+columns: ['cityscape', 'landscape', 'portrait', 'religious_painting', 'still_life']
+[[36  8  0  1  0]
+ [ 3 46  1  0  2]
+ [ 1  0 28 15  3]
+ [ 1  2  9 26  4]
+ [ 2  1  0  3 34]]
+
+Per-class recall:
+  cityscape            0.800  (36/45)
+  landscape            0.885  (46/52)
+  portrait             0.596  (28/47)
+  religious_painting   0.619  (26/42)
+  still_life           0.850  (34/40)
+
+Top confusions (true -> predicted):
+  portrait -> religious_painting: 15 images
+  religious_painting -> portrait: 9 images
+  cityscape -> landscape: 8 images
+
+Confidence threshold (fixed in advance):
+  >= 0.5: answers on 95% of images, accuracy on those 77.6%
+  >= 0.7: answers on 76% of images, accuracy on those 83.1%
+  >= 0.9: answers on 53% of images, accuracy on those 89.1%
+Saved results/resnet/confusion_resnet_finetune.png

@@ -9,13 +9,13 @@ import torch.nn as nn
 import torchvision
 from sklearn.metrics import confusion_matrix
 
-from data import get_splits
+from data import get_splits, out_path
 
 SEED = 1                                  # same seed as the first run of final.py
 torch.manual_seed(SEED)
 np.random.seed(SEED)
 
-ds, tr, va, te = get_splits()
+ds, tr, va, te = get_splits(seed=SEED)      # same split as the seed-1 run of final.py
 y = torch.tensor(ds.targets)
 classes = ds.classes
 
@@ -101,5 +101,5 @@ ax.set_xlabel("predicted")
 ax.set_ylabel("true")
 ax.set_title("ResNet-18 fine-tuned, test set")
 plt.tight_layout()
-plt.savefig("results/confusion_resnet_finetune.png", dpi=130)
-print("Saved results/confusion_resnet_finetune.png")
+plt.savefig(out_path("resnet", "confusion_resnet_finetune.png"), dpi=130)
+print("Saved results/resnet/confusion_resnet_finetune.png")
