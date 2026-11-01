@@ -36,3 +36,7 @@ $PY src/resnet.py --mode finetune
 # 5. Final comparison on the test set (5 artist-disjoint splits) and error analysis
 $PY src/final.py --seeds 1 2 3 4 5 | tee results/final/final_log.txt
 $PY src/confusion.py | tee results/resnet/confusion_log.txt
+
+# 6. Natural language artwork search (classical TF-IDF vs. neural MiniLM bi-encoder)
+mkdir -p results/search
+$PY src/search.py | tee results/search/search_log.txt

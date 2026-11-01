@@ -1,0 +1,92 @@
+================================================================================
+NATURAL LANGUAGE ARTWORK SEARCH: CLASSICAL (TF-IDF) VS NEURAL (MiniLM)
+================================================================================
+Catalog size: 1500 artworks across 5 genres.
+
+Model specs:
+  TF-IDF: Vocabulary size: 1182 | Fit time: 0.01s | Size: < 0.1 MB
+  MiniLM: Parameters: 22,713,216 (90.9 MB) | Init/embed time: 0.15s
+          Gallery embeddings: shape (1500, 384) (2.30 MB)
+
+================================================================================
+RETRIEVAL EVALUATION
+================================================================================
+
+Query: "Which painting shows a stormy sea?"
+Context: Seascape / storm visual scene from the project brief
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.290): cityscape by William Turner (Romanticism) [s38_r0322]
+    #2 (score 0.290): cityscape by William Turner (Romanticism) [s38_r0267]
+    #3 (score 0.290): cityscape by William Turner (Romanticism) [s38_r0987]
+  [Neural MiniLM] Latency: 1.84 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.476): cityscape by William Turner (Romanticism) [s33_r1089]
+    #2 (score 0.476): cityscape by William Turner (Romanticism) [s38_r0322]
+    #3 (score 0.476): cityscape by William Turner (Romanticism) [s38_r0267]
+
+Query: "I would like to see portraits of children"
+Context: Demographic subject portrait from the project brief
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.319): still_life by Zinaida Serebriakova (Expressionism) [s54_r0656]
+    #2 (score 0.319): still_life by Zinaida Serebriakova (Expressionism) [s54_r0470]
+    #3 (score 0.319): still_life by Zinaida Serebriakova (Expressionism) [s54_r0275]
+  [Neural MiniLM] Latency: 1.83 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.500): portrait by Zinaida Serebriakova (Art_Nouveau) [s38_r1112]
+    #2 (score 0.484): portrait by Mary Cassatt (Impressionism) [s38_r0344]
+    #3 (score 0.484): portrait by Mary Cassatt (Impressionism) [s38_r1041]
+
+Query: "Tempestuous ocean waves and dark cloudy skies"
+Context: Vocabulary mismatch test: synonym paraphrase of stormy sea
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.256): cityscape by William Turner (Romanticism) [s38_r0987]
+    #2 (score 0.256): cityscape by William Turner (Romanticism) [s33_r1089]
+    #3 (score 0.256): cityscape by William Turner (Romanticism) [s38_r0322]
+  [Neural MiniLM] Latency: 1.85 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.463): cityscape by William Turner (Romanticism) [s33_r1089]
+    #2 (score 0.463): cityscape by William Turner (Romanticism) [s38_r0322]
+    #3 (score 0.463): cityscape by William Turner (Romanticism) [s38_r0267]
+
+Query: "Paintings of young toddlers and infants with their mothers"
+Context: Vocabulary mismatch test: synonym paraphrase of children
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.319): portrait by Mary Cassatt (Impressionism) [s38_r0344]
+    #2 (score 0.319): portrait by Mary Cassatt (Impressionism) [s38_r1041]
+    #3 (score 0.319): portrait by Mary Cassatt (Impressionism) [s38_r0617]
+  [Neural MiniLM] Latency: 1.87 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.521): religious_painting by Unknown Artist (Early_Renaissance) [s33_r0095]
+    #2 (score 0.521): religious_painting by Unknown Artist (Early_Renaissance) [s33_r0123]
+    #3 (score 0.521): religious_painting by Unknown Artist (Early_Renaissance) [s33_r0081]
+
+Query: "Impressionist cityscape along the river Seine"
+Context: Style, genre and geographical landmark query
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.405): cityscape by Claude Monet (Impressionism) [s11_r1039]
+    #2 (score 0.405): cityscape by Claude Monet (Impressionism) [s11_r0901]
+    #3 (score 0.405): cityscape by Claude Monet (Impressionism) [s11_r0898]
+  [Neural MiniLM] Latency: 1.86 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.763): cityscape by Claude Monet (Impressionism) [s11_r0961]
+    #2 (score 0.763): cityscape by Claude Monet (Impressionism) [s11_r0962]
+    #3 (score 0.763): cityscape by Claude Monet (Impressionism) [s11_r0959]
+
+Query: "Cubist still life with violin and fruit bowl"
+Context: Art movement and specific object composition
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.294): still_life by Juan Gris (Cubism) [s33_r0978]
+    #2 (score 0.294): still_life by Juan Gris (Cubism) [s54_r0833]
+    #3 (score 0.294): still_life by Juan Gris (Cubism) [s38_r0994]
+  [Neural MiniLM] Latency: 1.86 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.691): still_life by Georges Braque (Cubism) [s38_r0704]
+    #2 (score 0.691): still_life by Georges Braque (Cubism) [s54_r0342]
+    #3 (score 0.691): still_life by Georges Braque (Cubism) [s54_r0309]
+
+Query: "Baroque religious scene with Madonna and angels"
+Context: Religious iconography and stylistic movement
+  [TF-IDF] Latency: 0.18 ms
+    #1 (score 0.383): religious_painting by Bartolome Esteban Murillo (Baroque) [s38_r0367]
+    #2 (score 0.383): religious_painting by Bartolome Esteban Murillo (Baroque) [s38_r0324]
+    #3 (score 0.383): religious_painting by Bartolome Esteban Murillo (Baroque) [s38_r0092]
+  [Neural MiniLM] Latency: 1.79 ms (ranking dot-product only: 0.007 ms)
+    #1 (score 0.703): religious_painting by Bartolome Esteban Murillo (Baroque) [s33_r0588]
+    #2 (score 0.703): religious_painting by Bartolome Esteban Murillo (Baroque) [s33_r0889]
+    #3 (score 0.703): religious_painting by Bartolome Esteban Murillo (Baroque) [s33_r0456]
+
+Saved /Users/ariane/Documents/GitHub/museum-guide/results/search/search_benchmark.json and /Users/ariane/Documents/GitHub/museum-guide/results/search/search_table.md

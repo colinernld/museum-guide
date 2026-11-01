@@ -1,0 +1,424 @@
+{
+ "catalog_size": 1500,
+ "models": {
+  "tfidf": {
+   "vocab_size": 1182,
+   "fit_time_s": 0.010609875000227476,
+   "size_mb": 0.05
+  },
+  "neural_minilm": {
+   "parameters": 22713216,
+   "model_size_mb": 90.852864,
+   "gallery_size_mb": 2.304,
+   "dimension": 384
+  }
+ },
+ "queries": [
+  {
+   "query": "Which painting shows a stormy sea?",
+   "intent": "guideline_query_seascape",
+   "description": "Seascape / storm visual scene from the project brief",
+   "tfidf": {
+    "latency_ms": 0.1832875000400236,
+    "top_results": [
+     {
+      "id": "s38_r0322",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.2895891697118396
+     },
+     {
+      "id": "s38_r0267",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.2895891697118396
+     },
+     {
+      "id": "s38_r0987",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.2895891697118396
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.836240840057144,
+    "ranking_only_ms": 0.006593832004000433,
+    "top_results": [
+     {
+      "id": "s33_r1089",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4756593108177185
+     },
+     {
+      "id": "s38_r0322",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4756593108177185
+     },
+     {
+      "id": "s38_r0267",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4756593108177185
+     }
+    ]
+   }
+  },
+  {
+   "query": "I would like to see portraits of children",
+   "intent": "guideline_query_children",
+   "description": "Demographic subject portrait from the project brief",
+   "tfidf": {
+    "latency_ms": 0.17597084006411023,
+    "top_results": [
+     {
+      "id": "s54_r0656",
+      "artist": "Zinaida Serebriakova",
+      "genre": "still_life",
+      "style": "Expressionism",
+      "score": 0.31888969617206936
+     },
+     {
+      "id": "s54_r0470",
+      "artist": "Zinaida Serebriakova",
+      "genre": "still_life",
+      "style": "Expressionism",
+      "score": 0.31888969617206936
+     },
+     {
+      "id": "s54_r0275",
+      "artist": "Zinaida Serebriakova",
+      "genre": "still_life",
+      "style": "Expressionism",
+      "score": 0.31888969617206936
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.8284400000266032,
+    "ranking_only_ms": 0.006561000001966022,
+    "top_results": [
+     {
+      "id": "s38_r1112",
+      "artist": "Zinaida Serebriakova",
+      "genre": "portrait",
+      "style": "Art_Nouveau",
+      "score": 0.4999614953994751
+     },
+     {
+      "id": "s38_r0344",
+      "artist": "Mary Cassatt",
+      "genre": "portrait",
+      "style": "Impressionism",
+      "score": 0.4844443202018738
+     },
+     {
+      "id": "s38_r1041",
+      "artist": "Mary Cassatt",
+      "genre": "portrait",
+      "style": "Impressionism",
+      "score": 0.484444260597229
+     }
+    ]
+   }
+  },
+  {
+   "query": "Tempestuous ocean waves and dark cloudy skies",
+   "intent": "paraphrase_stormy_sea",
+   "description": "Vocabulary mismatch test: synonym paraphrase of stormy sea",
+   "tfidf": {
+    "latency_ms": 0.17978500000026543,
+    "top_results": [
+     {
+      "id": "s38_r0987",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.25567366652067536
+     },
+     {
+      "id": "s33_r1089",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.25567366652067536
+     },
+     {
+      "id": "s38_r0322",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.25567366652067536
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.8496058399614412,
+    "ranking_only_ms": 0.006522999989101663,
+    "top_results": [
+     {
+      "id": "s33_r1089",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4634907841682434
+     },
+     {
+      "id": "s38_r0322",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4634907841682434
+     },
+     {
+      "id": "s38_r0267",
+      "artist": "William Turner",
+      "genre": "cityscape",
+      "style": "Romanticism",
+      "score": 0.4634907841682434
+     }
+    ]
+   }
+  },
+  {
+   "query": "Paintings of young toddlers and infants with their mothers",
+   "intent": "paraphrase_children",
+   "description": "Vocabulary mismatch test: synonym paraphrase of children",
+   "tfidf": {
+    "latency_ms": 0.17833416000939906,
+    "top_results": [
+     {
+      "id": "s38_r0344",
+      "artist": "Mary Cassatt",
+      "genre": "portrait",
+      "style": "Impressionism",
+      "score": 0.31906401233446013
+     },
+     {
+      "id": "s38_r1041",
+      "artist": "Mary Cassatt",
+      "genre": "portrait",
+      "style": "Impressionism",
+      "score": 0.31906401233446013
+     },
+     {
+      "id": "s38_r0617",
+      "artist": "Mary Cassatt",
+      "genre": "portrait",
+      "style": "Impressionism",
+      "score": 0.31906401233446013
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.868336659972556,
+    "ranking_only_ms": 0.0065356679988326505,
+    "top_results": [
+     {
+      "id": "s33_r0095",
+      "artist": "Unknown Artist",
+      "genre": "religious_painting",
+      "style": "Early_Renaissance",
+      "score": 0.5212666392326355
+     },
+     {
+      "id": "s33_r0123",
+      "artist": "Unknown Artist",
+      "genre": "religious_painting",
+      "style": "Early_Renaissance",
+      "score": 0.5212666392326355
+     },
+     {
+      "id": "s33_r0081",
+      "artist": "Unknown Artist",
+      "genre": "religious_painting",
+      "style": "Early_Renaissance",
+      "score": 0.5212666392326355
+     }
+    ]
+   }
+  },
+  {
+   "query": "Impressionist cityscape along the river Seine",
+   "intent": "style_genre_urban",
+   "description": "Style, genre and geographical landmark query",
+   "tfidf": {
+    "latency_ms": 0.18039581998891663,
+    "top_results": [
+     {
+      "id": "s11_r1039",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.40492414316991204
+     },
+     {
+      "id": "s11_r0901",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.40492414316991204
+     },
+     {
+      "id": "s11_r0898",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.40492414316991204
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.8578525000339141,
+    "ranking_only_ms": 0.006500499992398545,
+    "top_results": [
+     {
+      "id": "s11_r0961",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.7634203433990479
+     },
+     {
+      "id": "s11_r0962",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.7634203433990479
+     },
+     {
+      "id": "s11_r0959",
+      "artist": "Claude Monet",
+      "genre": "cityscape",
+      "style": "Impressionism",
+      "score": 0.7634203433990479
+     }
+    ]
+   }
+  },
+  {
+   "query": "Cubist still life with violin and fruit bowl",
+   "intent": "movement_objects",
+   "description": "Art movement and specific object composition",
+   "tfidf": {
+    "latency_ms": 0.17855082005553413,
+    "top_results": [
+     {
+      "id": "s33_r0978",
+      "artist": "Juan Gris",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.2935287002150043
+     },
+     {
+      "id": "s54_r0833",
+      "artist": "Juan Gris",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.2935287002150043
+     },
+     {
+      "id": "s38_r0994",
+      "artist": "Juan Gris",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.2935287002150043
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.8558399999892572,
+    "ranking_only_ms": 0.006519500006106682,
+    "top_results": [
+     {
+      "id": "s38_r0704",
+      "artist": "Georges Braque",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.691297173500061
+     },
+     {
+      "id": "s54_r0342",
+      "artist": "Georges Braque",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.691297173500061
+     },
+     {
+      "id": "s54_r0309",
+      "artist": "Georges Braque",
+      "genre": "still_life",
+      "style": "Cubism",
+      "score": 0.691297173500061
+     }
+    ]
+   }
+  },
+  {
+   "query": "Baroque religious scene with Madonna and angels",
+   "intent": "iconography",
+   "description": "Religious iconography and stylistic movement",
+   "tfidf": {
+    "latency_ms": 0.17991665998124518,
+    "top_results": [
+     {
+      "id": "s38_r0367",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.38268265203611057
+     },
+     {
+      "id": "s38_r0324",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.38268265203611057
+     },
+     {
+      "id": "s38_r0092",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.38268265203611057
+     }
+    ]
+   },
+   "neural": {
+    "latency_ms": 1.7914333399676252,
+    "ranking_only_ms": 0.0065586639975663275,
+    "top_results": [
+     {
+      "id": "s33_r0588",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.7029100060462952
+     },
+     {
+      "id": "s33_r0889",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.7029100060462952
+     },
+     {
+      "id": "s33_r0456",
+      "artist": "Bartolome Esteban Murillo",
+      "genre": "religious_painting",
+      "style": "Baroque",
+      "score": 0.7029100060462952
+     }
+    ]
+   }
+  }
+ ]
+}

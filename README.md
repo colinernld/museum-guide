@@ -10,7 +10,9 @@ We build, diagnose and compare:
 2. **training monitoring and failure diagnosis** (gradient norms, update sizes, dead / saturated units, provoked failures);
 3. a **pretrained ResNet-18** (frozen features and fine-tuning);
 4. **classical baselines** (raw pixels and hand-crafted colour / shape / texture features) to answer the
-   director's question: *is a neural network worth it on modest kiosk CPUs?*
+   director's question: *is a neural network worth it on modest kiosk CPUs?*;
+5. **natural language artwork search** (classical TF-IDF vs. a compact PyTorch bi-encoder, `all-MiniLM-L6-v2`)
+   to evaluate free-form visitor questions on modest hardware.
 
 Every number below is produced by the scripts of this repository and stored in `results/`.
 
@@ -68,6 +70,7 @@ evaluation splits of `src/final.py`.
     src/resnet.py            ResNet-18 learning curves: --mode extract | finetune
     src/final.py             final comparison of 8 models on 5 splits, test set, CIs, end-to-end CPU latency
     src/confusion.py         confusion matrix, per-class recall, confidence threshold (fine-tuned ResNet)
+    src/search.py            natural language search: TF-IDF vs. MiniLM bi-encoder, latency, memory profiling
     results/
       data/                  dataset_info.json, artist_leakage.json
       baselines/             baseline_log.txt
@@ -75,6 +78,7 @@ evaluation splits of `src/final.py`.
       diagnosis/             sanity check and provoked failures (*_curves.png, *_history.json)
       resnet/                learning curves, confusion matrix, confusion_log.txt
       final/                 final_table.md, final_results.json (one row per model and split), final_log.txt
+      search/                catalog.json, search_benchmark.json, search_table.md, gallery_embeddings_minilm.pt
 
 ## How to run
 
@@ -87,6 +91,8 @@ Python 3.12, CPU only. Every script can be run from any folder.
     python src/ffn.py --help                       # all flags (depth, activation, optimizer, sanity check...)
     python src/final.py --seeds 1 2 3 4 5          # final comparison (~35 min)
     python src/final.py --table-only               # rebuild final_table.md from final_results.json
+    python src/search.py                           # search benchmark (classical vs. neural)
+    python src/search.py --query "Which painting shows a stormy sea?"
 
 ## 1. Feed-forward network
 
@@ -173,6 +179,31 @@ batch 1, 1 CPU thread, measured on the development laptop.
 Full table with validation accuracy and parameter counts: `results/final/final_table.md`;
 one row per model and split: `results/final/final_results.json`.
 
+## 5. Natural language artwork search
+
+`src/search.py`: evaluates the second visitor task (natural language query against the 1 500-artwork catalog).
+Compares a classical inverted index (TF-IDF, n-grams 1-2) with a compact neural bi-encoder
+(`sentence-transformers/all-MiniLM-L6-v2`, 22.7 M parameters, 384 dimensions) running on 1 CPU thread.
+Gallery embeddings are precomputed once into a (1 500, 384) tensor (`results/search/gallery_embeddings_minilm.pt`, 2.3 MB).
+
+| Query | Top TF-IDF match | TF-IDF score | Top neural match (MiniLM) | Neural score |
+|---|---|---|---|---|
+| "Which painting shows a stormy sea?" | William Turner (cityscape) | 0.29 | William Turner (cityscape) | 0.48 |
+| "I would like to see portraits of children" | Zinaida Serebriakova (still_life) | 0.32 | Zinaida Serebriakova (portrait) | 0.50 |
+| "Tempestuous ocean waves and dark cloudy skies" | William Turner (cityscape) | 0.26 | William Turner (cityscape) | 0.46 |
+| "Impressionist cityscape along the river Seine" | Claude Monet (cityscape) | 0.40 | Claude Monet (cityscape) | 0.76 |
+| "Cubist still life with violin and fruit bowl" | Juan Gris (still_life) | 0.29 | Georges Braque (still_life) | 0.69 |
+
+- **Latency**: TF-IDF averages 0.18 ms per query. The neural bi-encoder averages 1.9 ms end-to-end on a single
+  CPU thread (query tokenization + forward pass); the cosine similarity matrix multiplication across all 1 500
+  artworks takes 0.007 ms (7 µs).
+- **Failure mode of TF-IDF**: lexical mismatch. When a query contains words not present in the catalog entry
+  (e.g. "rough ocean waters in a gale"), TF-IDF scores drop to 0.00. The neural bi-encoder maps synonyms and
+  paraphrases to nearby points in embedding space. On "portraits of children", TF-IDF ranks still lifes by an
+  artist whose biography mentions children; the neural model ranks portraits.
+
+Full table and benchmark metrics: `results/search/search_table.md` and `results/search/search_benchmark.json`.
+
 ## Recommendation to the director
 
 - **A pretrained neural network is worth it.** On paintings by artists it has never seen, a ResNet-18 is right
@@ -183,6 +214,9 @@ one row per model and split: `results/final/final_results.json`.
   extractor, followed by a logistic regression, is within the noise of the fine-tuned model, trains in about
   30 s on a laptop CPU, and can be retrained by a small team when the collection changes.
 - **A feed-forward network on pixels is not worth it**: it does no better than a logistic regression.
+- **For natural language search, a neural bi-encoder is worth it.** Precomputing 1 500 gallery embeddings
+  requires 2.3 MB of RAM. Query latency is under 2 ms on a single CPU thread. Unlike classical TF-IDF, it
+  handles descriptive visual queries and paraphrases without manual keyword curation.
 - **Use a confidence threshold** (e.g. 0.7) so that the guide says "I am not sure" rather than giving a wrong
   story; and be aware that portraits and religious paintings will be the most frequent confusion.
 
@@ -197,7 +231,9 @@ one row per model and split: `results/final/final_results.json`.
 - `src/confusion.py` retrains the fine-tuned model for split 1; CPU non-determinism gives 75.2 % there vs
   76.5 % in `final.py` for the same split.
 - Genre labels overlap (portrait / religious painting), which caps the accuracy any model can reach.
-- Only image recognition is covered; answering questions in natural language is out of the scope of this deliverable.
+- Natural language search uses text-based curatorial descriptions. A multimodal vision-language model (e.g. CLIP)
+  directly mapping image pixels to text queries would remove dependence on catalog text, but requires a larger
+  model footprint (~350 MB vs. 91 MB).
 
 ## Team and git workflow
 
