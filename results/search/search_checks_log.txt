@@ -1,0 +1,8 @@
+"a shipwreck": in 0 descriptions
+  TF-IDF best score: 0.000
+  MiniLM top 10 artists: Ivan Aivazovsky, William Turner (best score 0.325)
+TF-IDF size: vectorizer 0.031 MB + index 0.501 MB
+Latency on Apple M1, 1 thread, 7 queries:
+  TF-IDF mean 0.32 ms (from 0.32 to 0.33)
+  MiniLM mean 6.05 ms (from 5.66 to 6.37)
+Saved search_checks.json

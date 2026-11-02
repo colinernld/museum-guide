@@ -72,6 +72,7 @@ evaluation splits of `src/final.py`.
     src/final.py             final comparison of 8 models on 5 splits, test set, CIs, end-to-end CPU latency
     src/confusion.py         confusion matrix, per-class recall, confidence threshold (fine-tuned ResNet)
     src/search.py            natural language search: TF-IDF vs. MiniLM bi-encoder, latency, memory profiling
+    src/search_checks.py     extra search checks: word in no description, TF-IDF size, latency on this machine
     results/
       data/                  dataset_info.json, artist_leakage.json
       baselines/             baseline_log.txt
@@ -79,7 +80,8 @@ evaluation splits of `src/final.py`.
       diagnosis/             sanity check and provoked failures (*_curves.png, *_history.json)
       resnet/                learning curves, confusion matrix, confusion_log.txt
       final/                 final_table.md, final_results.json (one row per model and split), final_log.txt
-      search/                catalog.json, search_benchmark.json, search_table.md, search_log.txt
+      search/                catalog.json, search_benchmark.json, search_table.md, search_log.txt,
+                             search_checks.json, search_checks_log.txt
                              (gallery_embeddings_minilm.pt is regenerated, not committed)
 
 ## How to run
@@ -95,9 +97,10 @@ Python 3.12, CPU only. Every script can be run from any folder.
     python src/final.py --table-only               # rebuild final_table.md from final_results.json
     python src/search.py                           # search benchmark (classical vs. neural)
     python src/search.py --query "Which painting shows a stormy sea?"
+    python src/search_checks.py | tee results/search/search_checks_log.txt   # extra checks, not part of run_all.sh
 
-`src/search.py` only reads the MiniLM model from the local Hugging Face cache, so `src/search.py` and step 6 of
-`run_all.sh` fail until it has been downloaded once (91 MB):
+`src/search.py` only reads the MiniLM model from the local Hugging Face cache, so `src/search.py`,
+`src/search_checks.py` and step 6 of `run_all.sh` fail until it has been downloaded once (91 MB):
 
     python -c "from transformers import AutoModel, AutoTokenizer; n = 'sentence-transformers/all-MiniLM-L6-v2'; AutoTokenizer.from_pretrained(n); AutoModel.from_pretrained(n)"
 
@@ -208,14 +211,18 @@ No text describes a single painting and neither method looks at the image.
 | "Baroque religious scene with Madonna and angels" | Bartolome Esteban Murillo (religious_painting) | 0.38 | Bartolome Esteban Murillo (religious_painting) | 0.70 |
 
 - **Cost**: on one CPU thread of one laptop, TF-IDF averages 0.18 ms per query and MiniLM 1.8 ms end-to-end (query
-  tokenization + forward pass), of which 0.007 ms (7 µs) for the similarity with all 1 500 artworks. Memory: 91 MB for
-  the model and 2.3 MB for the vectors; the memory of the whole Python process with PyTorch is not measured.
+  tokenization + forward pass), of which 0.007 ms (7 µs) for the similarity with all 1 500 artworks. On a second
+  laptop (Apple M1, `results/search/search_checks.json`), the same queries average 0.32 ms and 6.0 ms: under 1 ms
+  and under 10 ms on both. Memory: 91 MB for the model and 2.3 MB for the vectors; the TF-IDF index measures 0.5 MB;
+  the memory of the whole Python process with PyTorch is not measured.
 - **Neither method always wins**: "portraits of children" gets a still life first with TF-IDF and a portrait with
   MiniLM, but "young toddlers and infants with their mothers" gets Mary Cassatt with TF-IDF and a religious
   painting with MiniLM.
 - **Words missing from the descriptions**: TF-IDF can only match words present in a description, while MiniLM compares
-  meanings. These 7 queries do not measure the difference: TF-IDF finds an answer on all of them. The labels "Fails"
-  and "Robust" and the sizes under 0.1 MB in `search_table.md` are written in the script, not measured.
+  meanings. These 7 queries do not measure the difference: TF-IDF finds an answer on all of them. One extra check
+  (`src/search_checks.py`) uses a word found in no description: "a shipwreck" has no match with TF-IDF (best score 0.00),
+  while the top 10 of MiniLM are paintings by Ivan Aivazovsky and William Turner. One query is not an evaluation.
+  The labels "Fails" and "Robust" and the sizes under 0.1 MB in `search_table.md` are written in the script, not measured.
 - **Ties**: artworks with the same description get the same score, and only 339 of the 1 500 texts are different. The
   3 first answers have the same score on all 7 queries with TF-IDF and on 6 of 7 with MiniLM, and the order inside a
   tie is not fixed, so the artworks listed first can change between runs on different machines.
@@ -238,9 +245,9 @@ Full table and benchmark metrics: `results/search/search_table.md` and `results/
   30 s on a laptop CPU, and can be retrained by a small team when the collection changes.
 - **A feed-forward network on pixels is not worth it**: it does no better than a logistic regression.
 - **Natural language search: keep it as a prototype.** Search by meaning looks cheap enough for a kiosk (91 MB model,
-  2.3 MB of vectors, about 2 ms per question on one laptop). Its quality is not proven: descriptions are generic and
-  no labelled evaluation exists yet, so these results do not show that it beats keyword search. Next step: a real
-  notice for each artwork, or a model that reads images such as CLIP, then a score on labelled questions.
+  2.3 MB of vectors, under 10 ms per question on the two laptops tested). Its quality is not proven: descriptions are
+  generic and no labelled evaluation exists yet, so these results do not show that it beats keyword search. Next step:
+  a real notice for each artwork, or a model that reads images such as CLIP, then a score on labelled questions.
 - **Use a confidence threshold** (e.g. 0.7) so that the guide says "I am not sure" rather than giving a wrong
   story; and be aware that portraits and religious paintings will be the most frequent confusion.
 
