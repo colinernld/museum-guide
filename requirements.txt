@@ -10,3 +10,5 @@ matplotlib==3.11.2
 pillow==12.3.0
 # only for make_wikiart_subset.py (building the dataset)
 datasets==5.1.0
+# only for src/search.py (MiniLM text encoder)
+transformers==5.22.1

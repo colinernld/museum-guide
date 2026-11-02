@@ -14,7 +14,8 @@ We build, diagnose and compare:
 5. **natural language artwork search** (classical TF-IDF vs. a compact PyTorch bi-encoder, `all-MiniLM-L6-v2`)
    to evaluate free-form visitor questions on modest hardware.
 
-Every number below is produced by the scripts of this repository and stored in `results/`.
+Every number below is produced by the scripts of this repository and stored in `results/`, except the
+visual checks of section 5, which were made by eye (the images are not committed: WikiArt licence).
 
 ## Key results
 
@@ -78,7 +79,8 @@ evaluation splits of `src/final.py`.
       diagnosis/             sanity check and provoked failures (*_curves.png, *_history.json)
       resnet/                learning curves, confusion matrix, confusion_log.txt
       final/                 final_table.md, final_results.json (one row per model and split), final_log.txt
-      search/                catalog.json, search_benchmark.json, search_table.md, gallery_embeddings_minilm.pt
+      search/                catalog.json, search_benchmark.json, search_table.md, search_log.txt
+                             (gallery_embeddings_minilm.pt is regenerated, not committed)
 
 ## How to run
 
@@ -93,6 +95,11 @@ Python 3.12, CPU only. Every script can be run from any folder.
     python src/final.py --table-only               # rebuild final_table.md from final_results.json
     python src/search.py                           # search benchmark (classical vs. neural)
     python src/search.py --query "Which painting shows a stormy sea?"
+
+`src/search.py` only reads the MiniLM model from the local Hugging Face cache, so `src/search.py` and step 6 of
+`run_all.sh` fail until it has been downloaded once (91 MB):
+
+    python -c "from transformers import AutoModel, AutoTokenizer; n = 'sentence-transformers/all-MiniLM-L6-v2'; AutoTokenizer.from_pretrained(n); AutoModel.from_pretrained(n)"
 
 ## 1. Feed-forward network
 
@@ -186,21 +193,37 @@ Compares a classical inverted index (TF-IDF, n-grams 1-2) with a compact neural 
 (`sentence-transformers/all-MiniLM-L6-v2`, 22.7 M parameters, 384 dimensions) running on 1 CPU thread.
 Gallery embeddings are precomputed once into a (1 500, 384) tensor (`results/search/gallery_embeddings_minilm.pt`, 2.3 MB).
 
+Both methods search short descriptions written by hand in `src/search.py`: one sentence per painter for 15 painters
+(209 artworks) and one sentence per genre for everyone else (1 291 artworks), as stored in `results/search/catalog.json`.
+No text describes a single painting and neither method looks at the image.
+
 | Query | Top TF-IDF match | TF-IDF score | Top neural match (MiniLM) | Neural score |
 |---|---|---|---|---|
 | "Which painting shows a stormy sea?" | William Turner (cityscape) | 0.29 | William Turner (cityscape) | 0.48 |
 | "I would like to see portraits of children" | Zinaida Serebriakova (still_life) | 0.32 | Zinaida Serebriakova (portrait) | 0.50 |
 | "Tempestuous ocean waves and dark cloudy skies" | William Turner (cityscape) | 0.26 | William Turner (cityscape) | 0.46 |
+| "Paintings of young toddlers and infants with their mothers" | Mary Cassatt (portrait) | 0.32 | Unknown Artist (religious_painting) | 0.52 |
 | "Impressionist cityscape along the river Seine" | Claude Monet (cityscape) | 0.40 | Claude Monet (cityscape) | 0.76 |
 | "Cubist still life with violin and fruit bowl" | Juan Gris (still_life) | 0.29 | Georges Braque (still_life) | 0.69 |
+| "Baroque religious scene with Madonna and angels" | Bartolome Esteban Murillo (religious_painting) | 0.38 | Bartolome Esteban Murillo (religious_painting) | 0.70 |
 
-- **Latency**: TF-IDF averages 0.18 ms per query. The neural bi-encoder averages 1.9 ms end-to-end on a single
-  CPU thread (query tokenization + forward pass); the cosine similarity matrix multiplication across all 1 500
-  artworks takes 0.007 ms (7 µs).
-- **Failure mode of TF-IDF**: lexical mismatch. When a query contains words not present in the catalog entry
-  (e.g. "rough ocean waters in a gale"), TF-IDF scores drop to 0.00. The neural bi-encoder maps synonyms and
-  paraphrases to nearby points in embedding space. On "portraits of children", TF-IDF ranks still lifes by an
-  artist whose biography mentions children; the neural model ranks portraits.
+- **Cost**: on one CPU thread of one laptop, TF-IDF averages 0.18 ms per query and MiniLM 1.8 ms end-to-end (query
+  tokenization + forward pass), of which 0.007 ms (7 µs) for the similarity with all 1 500 artworks. Memory: 91 MB for
+  the model and 2.3 MB for the vectors; the memory of the whole Python process with PyTorch is not measured.
+- **Neither method always wins**: "portraits of children" gets a still life first with TF-IDF and a portrait with
+  MiniLM, but "young toddlers and infants with their mothers" gets Mary Cassatt with TF-IDF and a religious
+  painting with MiniLM.
+- **Words missing from the descriptions**: TF-IDF can only match words present in a description, while MiniLM compares
+  meanings. These 7 queries do not measure the difference: TF-IDF finds an answer on all of them. The labels "Fails"
+  and "Robust" and the sizes under 0.1 MB in `search_table.md` are written in the script, not measured.
+- **Ties**: artworks with the same description get the same score, and only 339 of the 1 500 texts are different. The
+  3 first answers have the same score on all 7 queries with TF-IDF and on 6 of 7 with MiniLM, and the order inside a
+  tie is not fixed, so the artworks listed first can change between runs on different machines.
+- **Visual check of the first answers, by eye**: the first answer to "portraits of children" (`s38_r1112`) is a
+  drawing of an adult man. The 3 first answers to "a stormy sea" (`s33_r1089`, `s38_r0322`, `s38_r0267`) show a canal,
+  a street and a harbour; among the 12 artworks described with a stormy sea, only `s38_r0217` shows rough water, on a coast.
+- **Retrieval quality is not measured**: 7 queries and no list of correct answers. A score is a similarity between
+  two texts, not a proof that the answer is right, and scores of the two methods cannot be compared.
 
 Full table and benchmark metrics: `results/search/search_table.md` and `results/search/search_benchmark.json`.
 
@@ -214,9 +237,10 @@ Full table and benchmark metrics: `results/search/search_table.md` and `results/
   extractor, followed by a logistic regression, is within the noise of the fine-tuned model, trains in about
   30 s on a laptop CPU, and can be retrained by a small team when the collection changes.
 - **A feed-forward network on pixels is not worth it**: it does no better than a logistic regression.
-- **For natural language search, a neural bi-encoder is worth it.** Precomputing 1 500 gallery embeddings
-  requires 2.3 MB of RAM. Query latency is under 2 ms on a single CPU thread. Unlike classical TF-IDF, it
-  handles descriptive visual queries and paraphrases without manual keyword curation.
+- **Natural language search: keep it as a prototype.** Search by meaning looks cheap enough for a kiosk (91 MB model,
+  2.3 MB of vectors, about 2 ms per question on one laptop). Its quality is not proven: descriptions are generic and
+  no labelled evaluation exists yet, so these results do not show that it beats keyword search. Next step: a real
+  notice for each artwork, or a model that reads images such as CLIP, then a score on labelled questions.
 - **Use a confidence threshold** (e.g. 0.7) so that the guide says "I am not sure" rather than giving a wrong
   story; and be aware that portraits and religious paintings will be the most frequent confusion.
 
@@ -231,9 +255,10 @@ Full table and benchmark metrics: `results/search/search_table.md` and `results/
 - `src/confusion.py` retrains the fine-tuned model for split 1; CPU non-determinism gives 75.2 % there vs
   76.5 % in `final.py` for the same split.
 - Genre labels overlap (portrait / religious painting), which caps the accuracy any model can reach.
-- Natural language search uses text-based curatorial descriptions. A multimodal vision-language model (e.g. CLIP)
-  directly mapping image pixels to text queries would remove dependence on catalog text, but requires a larger
-  model footprint (~350 MB vs. 91 MB).
+- Natural language search reads generic descriptions written by hand, not a notice per artwork, and its quality is
+  not evaluated. It was only tested in English, the language of `all-MiniLM-L6-v2` and of the descriptions; French
+  questions are not supported. A multimodal vision-language model (e.g. CLIP) directly mapping image pixels to text
+  queries would remove dependence on catalog text, but requires a larger model (size not measured here).
 
 ## Team and git workflow
 
